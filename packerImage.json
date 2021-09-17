@@ -1,0 +1,32 @@
+{
+     "variables": {
+        "aws_region": "{{env `AWS_REGION`}}"
+        
+    },
+    "builders": [{
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "us-west-2",
+        "source_ami": "ami-XXXXXXX",
+        "iam_instance_profile": "GoldenAMIEC2InstanceProfile",
+        "instance_type": "t2.micro",
+        "ssh_username": "ec2-user",
+        "vpc_id": "vpc-XXXXXX",
+        "ami_users": "{{user `accounts`}}",
+        "ssh_pty" : true,
+        "subnet_id": "subnet-XXXXXX",
+        "ami_name": "HV-GoldenAMI-AmazonLinux2-{{timestamp}}",
+        "run_tags": {
+        "Name": "HV-GoldenAMI-AmazonLinux2-{{timestamp}}",
+        "Env": "dev",
+        "Project": "GoldenAMI"
+      }
+    }],
+    "provisioners": [{
+        "type": "shell",
+        "script": "install.sh",
+        "execute_command": "{{.Vars}} bash '{{.Path}}'"
+    }
+    ]
+}
